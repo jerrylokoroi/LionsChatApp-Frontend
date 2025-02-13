@@ -1,0 +1,146 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #4F4E55;
+}
+
+.form-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.logo img {
+    max-width: 100px;
+    height: auto;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #4F4E55;
+}
+
+input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #4F4E55;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 32px;
+    cursor: pointer;
+    color: #666;
+}
+
+button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #6DAA7D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #4F4E55;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.login-link a {
+    color: #6DAA7D;
+    text-decoration: none;
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.success-message {
+    color: #6DAA7D;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 31px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
+.password-toggle .eye-open,
+.password-toggle .eye-closed {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.2s ease;
+}
+
+.password-toggle .eye-closed {
+    opacity: 1;
+}
+
+.password-toggle .eye-open {
+    opacity: 0;
+}
+
+.password-toggle.active .eye-closed {
+    opacity: 0;
+}
+
+.password-toggle.active .eye-open {
+    opacity: 1;
+}
