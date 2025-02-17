@@ -11,9 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        [usernameError, passwordError, confirmPasswordError, messageDiv].forEach(listItems => {
-            listItems.textContent = '';
-            listItems.className = '';
+        // Clear previous error messages
+        [usernameError, passwordError, confirmPasswordError, messageDiv].forEach(el => {
+            el.textContent = '';
+            el.className = '';
         });
 
         const username = form.username.value.trim();
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let hasErrors = false;
 
+        // Validate username
         const usernameErrorMsg = PasswordValidation.validateUsername(username);
         if (usernameErrorMsg) {
             usernameError.textContent = usernameErrorMsg;
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             hasErrors = true;
         }
 
+        // Validate password & confirm password
         const passwordErrors = PasswordValidation.validatePassword(password, confirmPassword);
         if (passwordErrors.length) {
             passwordError.innerHTML = passwordErrors.map(error => `<li>${error}</li>`).join('');
@@ -42,32 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.disabled = true;
             messageDiv.textContent = 'Registering...';
 
-           // api call
-            const response = await fetch('https://localhost:7218/api/users/register', { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    userName: username,  
-                    passwordHash: password  
-                })
-            });
-        
-            const data = await response.json();
-        
-            if (!response.ok) {
-                throw new Error(data.message || 'Registration failed');
-            }
-        
+            await ApiService.registerUser(username, password);
+
             messageDiv.textContent = 'Registration successful! Redirecting...';
             messageDiv.classList.add('success-message');
-        
-            setTimeout(() => window.location.href = 'login.html', 2000); //Redirect to login
+
+            setTimeout(() => window.location.href = 'login.html', 2000); // Redirect to login
         } catch (error) {
             messageDiv.textContent = error.message || 'Registration failed';
-            messageDiv.className = 'error';
+            messageDiv.classList.add('error');
         } finally {
             submitButton.disabled = false;
         }
-        
     });
 });

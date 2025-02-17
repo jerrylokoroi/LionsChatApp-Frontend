@@ -9,3 +9,4 @@ class PasswordVisibility {
         });
     }
 }
+window.togglePasswordVisibility = PasswordVisibility.togglePasswordVisibility;
