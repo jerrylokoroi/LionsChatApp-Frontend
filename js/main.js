@@ -42,17 +42,32 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.disabled = true;
             messageDiv.textContent = 'Registering...';
 
-            // api call
-            throw new Error('Registration failed: API service not implemented');
-
+           // api call
+            const response = await fetch('https://localhost:7218/api/users/register', { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    userName: username,  
+                    passwordHash: password  
+                })
+            });
+        
+            const data = await response.json();
+        
+            if (!response.ok) {
+                throw new Error(data.message || 'Registration failed');
+            }
+        
             messageDiv.textContent = 'Registration successful! Redirecting...';
             messageDiv.classList.add('success-message');
-            setTimeout(() => window.location.href = '', 2000); // Redirect to login
+        
+            setTimeout(() => window.location.href = 'login.html', 2000); //Redirect to login
         } catch (error) {
             messageDiv.textContent = error.message || 'Registration failed';
             messageDiv.className = 'error';
         } finally {
             submitButton.disabled = false;
         }
+        
     });
 });
