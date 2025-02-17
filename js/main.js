@@ -20,25 +20,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = form.password.value.trim();
         const confirmPassword = form.confirmPassword.value.trim();
 
-        const usernameErrorMsg = PasswordValidation.validateUsername(username);
-        const passwordErrors = PasswordValidation.validatePassword(password, confirmPassword);
+        let hasErrors = false;
 
+        const usernameErrorMsg = PasswordValidation.validateUsername(username);
         if (usernameErrorMsg) {
             usernameError.textContent = usernameErrorMsg;
             usernameError.classList.add('error-message');
+            hasErrors = true;
         }
+
+        const passwordErrors = PasswordValidation.validatePassword(password, confirmPassword);
         if (passwordErrors.length) {
-            passwordErrors.forEach(error => {
-                if (error.includes('Password length')) {
-                    passwordError.textContent = error;
-                    passwordError.classList.add('error-message');
-                }
-                if (error.includes('match')) {
-                    confirmPasswordError.textContent = error;
-                    confirmPasswordError.classList.add('error-message');
-                }
-            });
+            passwordError.innerHTML = passwordErrors.map(error => `<li>${error}</li>`).join('');
+            passwordError.classList.add('error-message');
+            hasErrors = true;
         }
+
+        if (hasErrors) return;
 
         try {
             submitButton.disabled = true;
