@@ -11,10 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Clear previous error messages
-        [usernameError, passwordError, confirmPasswordError, messageDiv].forEach(el => {
-            el.textContent = '';
-            el.className = '';
+        [usernameError, passwordError, confirmPasswordError, messageDiv].forEach(listItems  => {
+            listItems.textContent = '';
+            listItems.className = '';
         });
 
         const username = form.username.value.trim();
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let hasErrors = false;
 
-        // Validate username
         const usernameErrorMsg = PasswordValidation.validateUsername(username);
         if (usernameErrorMsg) {
             usernameError.textContent = usernameErrorMsg;
@@ -31,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
             hasErrors = true;
         }
 
-        // Validate password & confirm password
         const passwordErrors = PasswordValidation.validatePassword(password, confirmPassword);
         if (passwordErrors.length) {
             passwordError.innerHTML = passwordErrors.map(error => `<li>${error}</li>`).join('');
