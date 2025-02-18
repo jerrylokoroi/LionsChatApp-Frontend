@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    PasswordVisibility.init();
-
     const form = document.getElementById('registrationForm');
     const usernameError = document.getElementById('usernameError');
     const passwordError = document.getElementById('passwordError');

@@ -9,3 +9,7 @@ class PasswordVisibility {
         });
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    PasswordVisibility.init();
+  });
