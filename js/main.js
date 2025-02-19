@@ -38,17 +38,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             submitButton.disabled = true;
-            messageDiv.textContent = 'Registering...';
+            messageDiv.textContent = form.id === "registrationForm" ? "Registering..." : "Logging in...";
+            messageDiv.classList.add('info-message')
 
-            await ApiService.registerUser(username, password);
+            if (form.id === "registrationForm") {
+                await ApiService.registerUser(username, password);
+                messageDiv.textContent = "Registration successful! Redirecting...";
+                messageDiv.classList.add("success-message");
 
-            messageDiv.textContent = 'Registration successful! Redirecting...';
-            messageDiv.classList.add('success-message');
+                setTimeout(() => (window.location.href = "login.html"), 2000);
+            } else {
+                messageDiv.textContent = "Login successful! Redirecting...";
+                messageDiv.classList.add("success-message");
 
-            setTimeout(() => window.location.href = 'login.html', 2000); // Redirect to login
+            }
+
         } catch (error) {
-            messageDiv.textContent = error.message || 'Registration failed';
-            messageDiv.classList.add('error');
+            messageDiv.textContent = error.message || (form.id === "registrationForm" ? "Registration failed" : "Login failed");
+            messageDiv.classList.add('error-message');
         } finally {
             submitButton.disabled = false;
         }

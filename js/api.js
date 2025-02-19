@@ -22,6 +22,7 @@ class ApiService {
 
         return await response.json();
     }
+    
 }
 
 window.ApiService = ApiService;
