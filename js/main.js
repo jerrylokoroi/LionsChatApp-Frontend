@@ -1,9 +1,7 @@
-import ChatroomManager from "./chatroom.js";
 document.addEventListener('DOMContentLoaded', () => {
-    
-    const chatroomManager = new ChatroomManager("https://localhost:7218/api");
-    chatroomManager.fetchChatrooms();
-    
+if (document.getElementById('chatRoomList')) {
+    ChatroomManager.fetchChatrooms();
+}
     const registrationForm = document.getElementById('registrationForm');
     const loginForm = document.getElementById('loginForm');
 
@@ -17,31 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('submitButton');
     const loginButton = document.getElementById('loginButton');
 
-    const chatRoomList = document.getElementById('chatRoomList');
-
-    // const chatRooms = [
-    //     { name: "Create Chatroom" }
-    // ];
-
-    // const chatRoomList = document.getElementById('chatRoomList');
-
-    // chatRooms.forEach(room => {
-    //     const li = document.createElement('li');
-    //     li.textContent = room.name;
-    //     li.addEventListener('click', () => {
-    //         window.location.href = room.url; 
-    //     });
-    //     chatRoomList.appendChild(li);
-    // });
-
     function clearErrors() {
-
         [usernameError, passwordError, confirmPasswordError, messageDiv].forEach(listItems => {
             if(listItems){
                listItems.textContent = '';
-            listItems.className = '';
+               listItems.className = '';
             }
-           
         });
     }
 
@@ -90,9 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 messageDiv.classList.add("success-message");
                 setTimeout(() => (window.location.href = "dashboard.html"), 2000);
             }
-        }
-
-        catch (error) {
+        } catch (error) {
             messageDiv.textContent = error.message || (formType === "register" ? "Registration failed" : "Login failed");
             messageDiv.classList.add('error-message');
         } finally {
@@ -103,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     if (registrationForm) {
         registrationForm.addEventListener('submit', (e) => handleFormSubmit(e, "register"));
     }
@@ -112,4 +88,3 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (e) => handleFormSubmit(e, "login"));
     }
 });
-

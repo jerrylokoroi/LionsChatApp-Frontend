@@ -1,14 +1,7 @@
-export default class ChatroomManager {
-    constructor(apiBaseUrl) {
-        this.apiBaseUrl = apiBaseUrl;
-        this.chatRoomList = document.getElementById("chatRoomList");
-        this.addRoomButton = document.createElement("button");
-        this.addRoomButton.textContent = "Add Chatroom";
-        this.addRoomButton.addEventListener("click", () => this.addChatroom());
-        document.querySelector(".chat-rooms").appendChild(this.addRoomButton);
-    }
+class ChatroomManager {
+    static apiBaseUrl = "https://localhost:7218/api";
 
-    async fetchChatrooms() {
+    static async fetchChatrooms() {
         try {
             const response = await fetch(`${this.apiBaseUrl}/chatrooms`);
             if (!response.ok) throw new Error("Failed to fetch chatrooms");
@@ -17,6 +10,7 @@ export default class ChatroomManager {
             if (!Array.isArray(result.data)) {
                 throw new Error("Expected an array of chatrooms");
             }
+            this.isAdmin = result.isAdmin;
             this.renderChatRooms(result.data);
         } catch (error) {
             console.error("Error fetching chatrooms:", error.message);
@@ -24,35 +18,45 @@ export default class ChatroomManager {
         }
     }
 
-    renderChatRooms(chatRooms) {
-        this.chatRoomList.innerHTML = "";
+    static renderChatRooms(chatRooms) {
+        const chatRoomList = document.getElementById("chatRoomList");
+        chatRoomList.innerHTML = "";
         chatRooms.forEach(room => {
             const li = document.createElement("li");
             li.textContent = room.name;
             li.dataset.id = room.id;
 
-            // Enter chatroom event
             li.addEventListener("click", () => this.enterChatroom(room.id));
 
-            // Delete button
-            const deleteButton = document.createElement("button");
-            deleteButton.textContent = "X";
-            deleteButton.classList.add("delete-btn");
-            deleteButton.addEventListener("click", async (event) => {
-                event.stopPropagation(); // Prevent enter event
-                await this.deleteChatroom(room.id);
-            });
+            if (this.isAdmin) {
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "X";
+                deleteButton.classList.add("delete-btn");
+                deleteButton.addEventListener("click", async (event) => {
+                    event.stopPropagation();
+                    await this.deleteChatroom(room.id);
+                });
 
-            li.appendChild(deleteButton);
-            this.chatRoomList.appendChild(li);
+                li.appendChild(deleteButton);
+            }
+
+            chatRoomList.appendChild(li);
         });
+
+        if (this.isAdmin) {
+            const addRoomButton = document.createElement("button");
+            addRoomButton.textContent = "Add Chatroom";
+            addRoomButton.classList.add("add-btn");
+            addRoomButton.addEventListener("click", () => this.addChatroom());
+            chatRoomList.appendChild(addRoomButton);
+        }
     }
 
-    enterChatroom(roomId) {
+    static enterChatroom(roomId) {
         window.location.href = `/chatroom.html?room=${roomId}`;
     }
 
-    async deleteChatroom(roomId) {
+    static async deleteChatroom(roomId) {
         try {
             const response = await fetch(`${this.apiBaseUrl}/chatrooms/${roomId}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Failed to delete chatroom");
@@ -62,7 +66,7 @@ export default class ChatroomManager {
         }
     }
 
-    async addChatroom() {
+    static async addChatroom() {
         const roomName = prompt("Enter new chatroom name:");
         if (roomName) {
             try {
@@ -84,3 +88,5 @@ export default class ChatroomManager {
         }
     }
 }
+
+window.ChatroomManager = ChatroomManager;
