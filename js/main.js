@@ -1,4 +1,9 @@
+import ChatroomManager from "./chatroom.js";
 document.addEventListener('DOMContentLoaded', () => {
+    
+    const chatroomManager = new ChatroomManager("https://localhost:7218/api");
+    chatroomManager.fetchChatrooms();
+    
     const registrationForm = document.getElementById('registrationForm');
     const loginForm = document.getElementById('loginForm');
 
@@ -12,20 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('submitButton');
     const loginButton = document.getElementById('loginButton');
 
-    const chatRooms = [
-        { name: "Create Chatroom" }
-    ];
-
     const chatRoomList = document.getElementById('chatRoomList');
 
-    chatRooms.forEach(room => {
-        const li = document.createElement('li');
-        li.textContent = room.name;
-        li.addEventListener('click', () => {
-            window.location.href = room.url; 
-        });
-        chatRoomList.appendChild(li);
-    });
+    // const chatRooms = [
+    //     { name: "Create Chatroom" }
+    // ];
+
+    // const chatRoomList = document.getElementById('chatRoomList');
+
+    // chatRooms.forEach(room => {
+    //     const li = document.createElement('li');
+    //     li.textContent = room.name;
+    //     li.addEventListener('click', () => {
+    //         window.location.href = room.url; 
+    //     });
+    //     chatRoomList.appendChild(li);
+    // });
 
     function clearErrors() {
 
@@ -96,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
     if (registrationForm) {
         registrationForm.addEventListener('submit', (e) => handleFormSubmit(e, "register"));
     }
@@ -104,3 +112,4 @@ document.addEventListener('DOMContentLoaded', () => {
         loginForm.addEventListener('submit', (e) => handleFormSubmit(e, "login"));
     }
 });
+
