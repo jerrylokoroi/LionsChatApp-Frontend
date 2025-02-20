@@ -8,6 +8,18 @@ body {
     background-color: #4F4E55;
 }
 
+:root {
+    --primary-color: #9fb6ab;
+    --main-color: #88be8a;
+    --text-color: #ffffff;
+    --other-color: #000;
+    --minor-bg: #ced4ce;
+    --chatroom-btn-hover: #cbd0dd;
+    --error: #ff0000; 
+    --toggle: #666;
+
+}
+
 .form-container {
     background-color: white;
     padding: 2rem;
@@ -85,7 +97,7 @@ button:disabled {
 }
 
 .error-message {
-    color: #ff0000;
+    color: var(--error);
     font-size: 0.875rem;
     margin-top: 0.25rem;
 }
@@ -143,4 +155,63 @@ button:disabled {
 
 .password-toggle.active .eye-open {
     opacity: 1;
+}
+
+/* == DASHBOAD CSS == */
+
+
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+.chat-rooms {
+    width: 30%;
+    background: var(--minor-bg);
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.chat-rooms h2 {
+    font-size: 24px;
+    margin-bottom: 35px;
+    margin: 0 35px;
+    color: var(--other-color);
+}
+
+.chat-rooms ul {
+    list-style: none;
+}
+
+.chat-rooms li {
+    background:var(--primary-color);
+    margin-bottom: 50px;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-rooms li:hover {
+    background: var(--chatroom-btn-hover);
+}
+
+.welcome-section {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--main-color);
+    color: var(--text-color);
+    text-align: center;
+}
+
+.logo {
+    width: 240px;
+    height: auto;
+    margin-bottom: 35px;
 }

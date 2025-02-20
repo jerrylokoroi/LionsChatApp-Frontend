@@ -12,6 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const registerButton = document.getElementById('submitButton');
     const loginButton = document.getElementById('loginButton');
 
+    const chatRooms = [
+        { name: "Create Chatroom" }
+    ];
+
+    const chatRoomList = document.getElementById('chatRoomList');
+
+    chatRooms.forEach(room => {
+        const li = document.createElement('li');
+        li.textContent = room.name;
+        li.addEventListener('click', () => {
+            window.location.href = room.url; 
+        });
+        chatRoomList.appendChild(li);
+    });
+
     function clearErrors() {
 
         [usernameError, passwordError, confirmPasswordError, messageDiv].forEach(listItems => {
