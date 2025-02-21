@@ -3,13 +3,26 @@ class ChatroomManager {
 
     static async fetchChatrooms() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/chatrooms`);
+            const token = localStorage.getItem("jwtToken");
+            if (!token) throw new Error("User not authenticated");
+    
+            const response = await fetch(`${this.apiBaseUrl}/chatrooms`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+    
             if (!response.ok) throw new Error("Failed to fetch chatrooms");
+    
             const result = await response.json();
             console.log("Fetched chatrooms:", result);
+    
             if (!Array.isArray(result.data)) {
                 throw new Error("Expected an array of chatrooms");
             }
+    
             this.isAdmin = result.isAdmin;
             this.renderChatRooms(result.data);
         } catch (error) {
@@ -17,6 +30,7 @@ class ChatroomManager {
             alert("Unable to fetch chatrooms. Please try again later.");
         }
     }
+    
 
     static renderChatRooms(chatRooms) {
         const chatRoomList = document.getElementById("chatRoomList");
@@ -26,7 +40,7 @@ class ChatroomManager {
             li.textContent = room.name;
             li.dataset.id = room.id;
 
-            li.addEventListener("click", () => this.enterChatroom(room.id));
+            li.addEventListener("click", () => this.enterChatroom(room.id, room.name));
 
             if (this.isAdmin) {
                 const deleteButton = document.createElement("button");
@@ -52,8 +66,33 @@ class ChatroomManager {
         }
     }
 
-    static enterChatroom(roomId) {
-        window.location.href = `/chatroom.html?room=${roomId}`;
+    static enterChatroom(roomId, roomName) {
+        document.getElementById("chatRoomName").textContent = roomName;
+        this.fetchMessages(roomId);
+    }
+
+    static async fetchMessages(roomId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/chatrooms/${roomId}/messages`);
+            if (!response.ok) throw new Error("Failed to fetch messages");
+            const result = await response.json();
+            console.log("Fetched messages:", result);
+            this.renderMessages(result.data);
+        } catch (error) {
+            console.error("Error fetching messages:", error.message);
+            alert("Unable to fetch messages. Please try again later.");
+        }
+    }
+
+    static renderMessages(messages) {
+        const chatMessages = document.getElementById("chatMessages");
+        chatMessages.innerHTML = "";
+        messages.forEach(message => {
+            const div = document.createElement("div");
+            div.classList.add("message");
+            div.textContent = `${message.sender}: ${message.text}`;
+            chatMessages.appendChild(div);
+        });
     }
 
     static async deleteChatroom(roomId) {
@@ -87,6 +126,48 @@ class ChatroomManager {
             }
         }
     }
+
+    static async sendMessage(roomId, message) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/chatrooms/${roomId}/messages`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text: message })
+            });
+            if (!response.ok) throw new Error("Failed to send message");
+            this.fetchMessages(roomId);
+        } catch (error) {
+            console.error("Error sending message:", error.message);
+            alert("Unable to send message. Please try again later.");
+        }
+    }
 }
 
 window.ChatroomManager = ChatroomManager;
+
+document.addEventListener('DOMContentLoaded', () => {
+    ChatroomManager.fetchChatrooms();
+
+    const sendMessageButton = document.getElementById("sendMessageButton");
+    const messageInput = document.getElementById("messageInput");
+
+    sendMessageButton.addEventListener("click", () => {
+        const activeChatroom = document.querySelector(".chat-rooms li.active");
+        if (activeChatroom) {
+            const roomId = activeChatroom.dataset.id;
+            const message = messageInput.value.trim();
+            if (message) {
+                ChatroomManager.sendMessage(roomId, message);
+                messageInput.value = "";
+            }
+        }
+    });
+
+    messageInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            sendMessageButton.click();
+        }
+    });
+});

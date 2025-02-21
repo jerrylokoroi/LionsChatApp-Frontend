@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-if (document.getElementById('chatRoomList')) {
-    ChatroomManager.fetchChatrooms();
-}
+
+
     const registrationForm = document.getElementById('registrationForm');
     const loginForm = document.getElementById('loginForm');
 
@@ -86,5 +85,9 @@ if (document.getElementById('chatRoomList')) {
 
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => handleFormSubmit(e, "login"));
+    }
+    
+    if (document.getElementById('chatRoomList')) {
+        ChatroomManager.fetchChatrooms();
     }
 });
