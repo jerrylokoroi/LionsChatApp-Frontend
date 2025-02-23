@@ -46,13 +46,20 @@ class ChatroomApiService {
     }
 
     static async addChatroom(name, createdBy, token) {
+        const now = new Date().toISOString();
         const response = await fetch(`${this.API_BASE_URL}/chatrooms/add-chatroom`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ name, createdBy, createdAt: new Date() })
+            body: JSON.stringify({
+                name,
+                createdById: createdBy,
+                createdAt: now,
+                updatedById: createdBy,
+                updatedAt: now
+            })
         });
 
         if (!response.ok) throw new Error("Failed to add chatroom");
