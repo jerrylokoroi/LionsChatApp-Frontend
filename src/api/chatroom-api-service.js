@@ -1,0 +1,75 @@
+class ChatroomApiService {
+    static API_BASE_URL = "https://localhost:7218/api";
+
+    static async fetchChatrooms(token) {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            const result = await response.json();
+            throw new Error(result.message || "Failed to fetch chatrooms");
+        }
+
+        const result = await response.json();
+        if (!Array.isArray(result.data)) throw new Error("Chatrooms data is not an array");
+        return result.data;
+    }
+
+    static async fetchMessages(roomId, token) {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms/${roomId}/messages`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch messages");
+        return await response.json();
+    }
+
+    static async deleteChatroom(roomId, token) {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms/${roomId}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) throw new Error("Failed to delete chatroom");
+    }
+
+    static async addChatroom(name, createdBy, token) {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms/add-chatroom`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, createdBy, createdAt: new Date() })
+        });
+
+        if (!response.ok) throw new Error("Failed to add chatroom");
+    }
+
+    static async sendMessage(roomId, message, token) {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms/${roomId}/messages`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text: message })
+        });
+
+        if (!response.ok) throw new Error("Failed to send message");
+    }
+}
+
+export default ChatroomApiService;

@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Lions Chat</title>
+    <title>Welcome - Lions Chat</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="welcome-room-container">
         <aside class="chat-rooms">
             <h2>Chat Rooms</h2>
             <ul id="chatRoomList"></ul>
         </aside>
         <main class="welcome-section">
             <img src="/images/logo.webp" alt="Lions Chat Logo" class="logo">
-            <h1>Welcome to Lions Chat App</h1>
+            <h1 id="welcomeMessage">Welcome to Lions Chat App</h1>
+            <p id="adminStatus"></p> 
         </main>
     </div>
 
-    <script src="js/chatroom.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="src/main.js"></script>
 </body>
 </html>

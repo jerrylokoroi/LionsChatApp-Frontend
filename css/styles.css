@@ -17,7 +17,6 @@ body {
     --chatroom-btn-hover: #cbd0dd;
     --error: #ff0000; 
     --toggle: #666;
-
 }
 
 .form-container {
@@ -32,6 +31,8 @@ body {
 .logo {
     text-align: center;
     margin-bottom: 1.5rem;
+    width: 240px;
+    height: auto;
 }
 
 .logo img {
@@ -63,7 +64,33 @@ input {
     right: 10px;
     top: 32px;
     cursor: pointer;
-    color: #666;
+    color: var(--toggle);
+    width: 24px;
+    height: 24px;
+}
+
+.password-toggle .eye-open,
+.password-toggle .eye-closed {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.2s ease;
+}
+
+.password-toggle .eye-closed {
+    opacity: 1;
+}
+
+.password-toggle .eye-open {
+    opacity: 0;
+}
+
+.password-toggle.active .eye-closed {
+    opacity: 0;
+}
+
+.password-toggle.active .eye-open {
+    opacity: 1;
 }
 
 button {
@@ -124,61 +151,28 @@ button:disabled {
     }
 }
 
-.password-toggle {
-    position: absolute;
-    right: 10px;
-    top: 31px;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-}
-
-.password-toggle .eye-open,
-.password-toggle .eye-closed {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: opacity 0.2s ease;
-}
-
-.password-toggle .eye-closed {
-    opacity: 1;
-}
-
-.password-toggle .eye-open {
-    opacity: 0;
-}
-
-.password-toggle.active .eye-closed {
-    opacity: 0;
-}
-
-.password-toggle.active .eye-open {
-    opacity: 1;
-}
-
-/* == DASHBOAD CSS == */
-
-
-.dashboard-container {
+/* Welcome room CSS */
+.welcome-room-container {
     display: flex;
     height: 100vh;
     width: 100%;
+    background-color: var(--main-color);
 }
 
 .chat-rooms {
     width: 30%;
     background: var(--minor-bg);
     padding: 20px;
-    justify-content: center;
-    align-items: center;
+    position: relative;
+    display: flex;
     flex-direction: column;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
 }
 
 .chat-rooms h2 {
     font-size: 24px;
     margin-bottom: 35px;
-    margin: 0 35px;
     color: var(--other-color);
 }
 
@@ -187,10 +181,12 @@ button:disabled {
 }
 
 .chat-rooms li {
-    background:var(--primary-color);
-    margin-bottom: 50px;
-    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--primary-color);
     margin: 5px 0;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -199,66 +195,63 @@ button:disabled {
     background: var(--chatroom-btn-hover);
 }
 
+.delete-btn {
+    font-size: 12px;
+    padding: 2px 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    width: 20%;
+}
+
 .welcome-section {
     width: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: var(--main-color);
     color: var(--text-color);
     text-align: center;
 }
 
-.logo {
-    width: 240px;
-    height: auto;
-    margin-bottom: 35px;
-}
-
-.delete-btn {
-    font-size: 12px;
-    padding: 2px 5px;
-    margin-left: auto;
-    background-color: red;
-    color: white;
-    border: none;
-    cursor: pointer;
-    float: right;
-}
-
-.add-btn {
+.add-btn,
+.logout-btn {
     display: block;
     margin: 10px 0;
     padding: 5px 10px;
-    background-color: green;
     color: white;
     border: none;
     cursor: pointer;
+    position: absolute;
+}
+
+.add-btn {
+    background-color: green;
+    bottom: 10%;
+    left: 0px;
+}
+
+.logout-btn {
+    background-color: red;
+    bottom: 25px;
+    left: 0px;
+}
+
+#adminStatus {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: var(--text-color);
 }
 
 /* Chatroom for messages */
-
-.dashboard-container {
-    display: flex;
-    height: 100vh;
-    background-color: var(--main-color);
-}
-
-.chat-rooms {
-    width: 25%;
-    padding: 10px;
-    border-right: 1px solid #ccc;
-    overflow-y: auto;
-}
-
 .chat-section {
     width: 75%;
     display: flex;
     flex-direction: column;
     padding: 10px;
 }
-
 
 .chat-messages {
     flex-grow: 1;
@@ -294,25 +287,4 @@ button:disabled {
 
 .message {
     margin-bottom: 10px;
-}
-
-.delete-btn {
-    font-size: 12px;
-    padding: 2px 5px;
-    margin-left: auto;
-    background-color: red;
-    color: white;
-    border: none;
-    cursor: pointer;
-    float: right;
-}
-
-.add-btn {
-    display: block;
-    margin: 10px 0;
-    padding: 5px 10px;
-    background-color: green;
-    color: white;
-    border: none;
-    cursor: pointer;
 }
