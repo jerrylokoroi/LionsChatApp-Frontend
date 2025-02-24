@@ -1,3 +1,5 @@
+import ChatroomApiService from '../api/chatroom-api-service.js';
+
 class UIManager {
     static clearErrors() {
         const errorElements = [
@@ -58,26 +60,43 @@ class UIManager {
         if (!chatRoomList) return;
         chatRoomList.innerHTML = '';
 
-        chatrooms.forEach(room => {
-            const li = document.createElement('li');
-            li.textContent = room.name;
-            li.dataset.id = room.id;
+        if (chatrooms.length === 0) {
+            const noChatroomsMessage = document.createElement('li');
+            noChatroomsMessage.textContent = 'No chatrooms available';
+            chatRoomList.appendChild(noChatroomsMessage);
+        } else {
+            chatrooms.forEach(room => {
+                const li = document.createElement('li');
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = room.name;
+                li.appendChild(nameSpan);
+                li.dataset.id = room.id;
 
-            if (isAdmin) {
-                const deleteButton = document.createElement('button');
-                deleteButton.textContent = 'X';
-                deleteButton.classList.add('delete-btn');
-                deleteButton.addEventListener('click', (e) => e.stopPropagation());
-                li.appendChild(deleteButton);
-            }
+                if (isAdmin) {
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'X';
+                    deleteButton.classList.add('delete-btn');
+                    li.appendChild(deleteButton);
+                }
 
-            chatRoomList.appendChild(li);
-        });
+                chatRoomList.appendChild(li);
+            });
+        }
 
         if (isAdmin) {
             const addButton = document.createElement('button');
             addButton.textContent = 'Add Chatroom';
             addButton.classList.add('add-btn');
+            addButton.addEventListener('click', async () => {
+                const name = prompt('Enter new chatroom name:');
+                if (name) {
+                    const token = localStorage.getItem('token');
+                    const createdBy = localStorage.getItem('id');
+                    await ChatroomApiService.addChatroom(name, createdBy, token);
+                    const updatedChatrooms = await ChatroomApiService.fetchChatrooms(token);
+                    UIManager.renderChatrooms(updatedChatrooms, isAdmin);
+                }
+            });
             chatRoomList.appendChild(addButton);
         }
 
@@ -89,6 +108,31 @@ class UIManager {
             window.location.href = 'login.html';
         });
         chatRoomList.appendChild(logoutButton);
+
+        // Attach event listeners to chatrooms
+        chatRoomList.querySelectorAll('li').forEach(li => {
+            li.addEventListener('click', () => {
+                const roomId = li.dataset.id;
+                const roomName = li.querySelector('span').textContent;
+                window.location.href = `chatroom.html?roomId=${roomId}&roomName=${encodeURIComponent(roomName)}`;
+            });
+
+            if (isAdmin) {
+                const deleteButton = li.querySelector('.delete-btn');
+                if (deleteButton) {
+                    deleteButton.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        const confirmed = confirm('Are you sure you want to delete this chatroom?');
+                        if (confirmed) {
+                            const token = localStorage.getItem('token');
+                            await ChatroomApiService.deleteChatroom(li.dataset.id, token);
+                            const updatedChatrooms = await ChatroomApiService.fetchChatrooms(token);
+                            UIManager.renderChatrooms(updatedChatrooms, isAdmin);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     static async loadChatroom(roomId, roomName) {

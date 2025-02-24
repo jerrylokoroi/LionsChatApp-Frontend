@@ -10,6 +10,10 @@ class ChatroomApiService {
             }
         });
 
+        if (response.status === 404) {
+            return [];
+        }
+
         if (!response.ok) {
             const result = await response.json();
             throw new Error(result.message || "Failed to fetch chatrooms");

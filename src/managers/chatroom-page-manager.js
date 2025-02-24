@@ -1,5 +1,6 @@
 import ChatroomApiService from '../api/chatroom-api-service.js';
 import UIManager from '../ui/ui-manager.js';
+import WelcomeRoomManager from '../managers/welcome-room-manager.js';
 
 class ChatroomPageManager {
     static async init() {
@@ -18,7 +19,25 @@ class ChatroomPageManager {
             return;
         }
 
-        UIManager.renderChatroomName(roomName);
+        WelcomeRoomManager.navigateToChatroom(roomId, roomName, token);
+    }
+
+    static async loadChatroom(roomId, roomName, token) {
+        const chatSection = document.getElementById('chatSection');
+        if (!chatSection) {
+            console.error('chatSection element not found');
+            UIManager.showError('Error: Chat section not found on the page.');
+            return;
+        }
+
+        chatSection.innerHTML = `
+            <h2>${roomName}</h2>
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type a message...">
+                <button id="sendMessageButton">Send</button>
+            </div>
+        `;
 
         try {
             const messages = await ChatroomApiService.fetchMessages(roomId, token);
@@ -50,4 +69,4 @@ class ChatroomPageManager {
     }
 }
 
-export default ChatroomPageManager;
+export default ChatroomPageManager; 

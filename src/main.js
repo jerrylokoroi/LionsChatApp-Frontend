@@ -4,7 +4,7 @@ import WelcomeRoomManager from './managers/welcome-room-manager.js';
 import UIManager from './ui/ui-manager.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    const currentPage = window.location.pathname.split('/').pop() || 'login.html';
 
     switch (currentPage) {
         case 'register.html':
