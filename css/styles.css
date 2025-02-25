@@ -162,7 +162,6 @@ button:disabled {
 .chat-rooms {
     width: 30%;
     background: var(--minor-bg);
-    padding: 20px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -179,6 +178,7 @@ button:disabled {
 
 .chat-rooms ul {
     list-style: none;
+    padding: 1px;
 }
 
 .chat-rooms li {
@@ -251,18 +251,15 @@ button:disabled {
     width: 75%;
     display: flex;
     flex-direction: column;
-    padding: 10px;
 }
 
 .chat-messages {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 10px;
 }
 
 .chat-input {
     display: flex;
-    padding: 10px;
     width: 95%;
 }
 
@@ -289,4 +286,93 @@ button:disabled {
 
 .message {
     margin-bottom: 10px;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    .form-container {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .chatroom-container {
+        height: 100vh;
+    }
+
+    .chat-rooms {
+        width: 100%;
+        border-right: none;
+        border-top: 1px solid #ccc;
+        padding: 20px;
+        order: 1;
+    }
+
+    .welcome-section,
+    .chat-section {
+        width: 100%;
+        padding: 10px;
+        order: 2;
+    }
+
+    .chat-input {
+        width: 100%;
+    }
+
+    .add-btn,
+    .logout-btn {
+        position: static;
+        margin: 10px auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 0.5rem;
+    }
+
+    .logo img {
+        max-width: 80px;
+    }
+
+    .chat-rooms h2 {
+        font-size: 20px;
+    }
+
+    .chat-rooms li {
+        padding: 5px;
+    }
+
+    .chat-input input {
+        padding: 5px;
+    }
+
+    .chat-input button {
+        padding: 5px 10px;
+    }
+
+    .chatroom-container {
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .chat-rooms {
+        width: 100%;
+        border-right: none;
+        border-top: 1px solid #ccc;
+        order: 2;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    .welcome-section,
+    .chat-section {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        order: 1;
+    }
 }
