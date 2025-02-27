@@ -1,8 +1,9 @@
 import ChatroomApiService from '../api/chatroom-api-service.js';
 import UIManager from '../ui/ui-manager.js';
-import WelcomeRoomManager from '../managers/welcome-room-manager.js';
 
 class ChatroomPageManager {
+    static connection = null;
+
     static async init() {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -19,7 +20,8 @@ class ChatroomPageManager {
             return;
         }
 
-        WelcomeRoomManager.navigateToChatroom(roomId, roomName, token);
+        await this.loadChatroom(roomId, roomName, token);
+        this.setupSignalRConnection(roomId, token);
     }
 
     static async loadChatroom(roomId, roomName, token) {
@@ -39,34 +41,72 @@ class ChatroomPageManager {
             </div>
         `;
 
-        try {
-            const messages = await ChatroomApiService.fetchMessages(roomId, token);
-            UIManager.renderMessages(messages);
+        const sendMessageButton = document.getElementById('sendMessageButton');
+        const messageInput = document.getElementById('messageInput');
+        sendMessageButton.addEventListener('click', () => this.handleSendMessage(roomId, messageInput, token));
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessageButton.click();
+        });
 
-            const sendMessageButton = document.getElementById('sendMessageButton');
-            const messageInput = document.getElementById('messageInput');
-            sendMessageButton.addEventListener('click', () => this.handleSendMessage(roomId, messageInput, token));
-            messageInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessageButton.click();
-            });
-        } catch (error) {
-            UIManager.showError(error.message);
-        }
+        this.setupSignalRConnection(roomId, token);
     }
 
     static async handleSendMessage(roomId, messageInput, token) {
+        if (this.connection && this.connection.state !== signalR.HubConnectionState.Connected) {
+            UIManager.showError('Cannot send message: Not connected to chat');
+            return;
+        }
+    
         const message = messageInput.value.trim();
+        
         if (message) {
             try {
                 await ChatroomApiService.sendMessage(roomId, message, token);
                 messageInput.value = '';
-                const messages = await ChatroomApiService.fetchMessages(roomId, token);
-                UIManager.renderMessages(messages);
             } catch (error) {
                 UIManager.showError(error.message);
             }
         }
     }
+
+    static async setupSignalRConnection(roomId, token) {
+        if (this.connection) {
+            await this.connection.stop();
+            this.connection = null;
+        }
+
+        this.connection = new signalR.HubConnectionBuilder()
+            .withUrl(`https://localhost:7218/chatHub`, { accessTokenFactory: () => token })
+            .withAutomaticReconnect()
+            .build();
+
+            this.connection.on('ReceiveMessage', (user, message) => {
+                console.log("Message received from SignalR:", user, message);
+                const chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    const div = document.createElement('div');
+                    div.classList.add('message');
+                    div.textContent = `${user}: ${message}`;
+                    chatMessages.appendChild(div);
+                } else {
+                    console.error("chatMessages element not found when receiving message");
+                }
+            });
+
+        this.connection.on('LoadMessages', (messages) => {
+            console.log("Loaded messages from SignalR:", messages);
+            UIManager.renderMessages(messages);
+        });
+
+        this.connection.start()
+            .then(() => {
+                console.log("SignalR connection established successfully");
+                console.log(`Attempting to join chatroom ${roomId}`);
+                return this.connection.invoke('JoinChatroom', roomId.toLowerCase());
+            })
+            .then(() => console.log(`Joined chatroom ${roomId}`))
+            .catch(err => console.error('SignalR connection error:', err));
+    }
 }
 
-export default ChatroomPageManager; 
+export default ChatroomPageManager;

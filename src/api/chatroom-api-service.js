@@ -33,8 +33,18 @@ class ChatroomApiService {
             }
         });
 
-        if (!response.ok) throw new Error("Failed to fetch messages");
-        return await response.json();
+        if (response.status === 404) {
+            console.error(`Chatroom with ID ${roomId} not found`);
+            throw new Error("Chatroom not found");
+        }
+
+        if (!response.ok) {
+            const result = await response.json();
+            throw new Error(result.message || "Failed to fetch messages");
+        }
+
+        const result = await response.json();
+        return result.data || [];
     }
 
     static async deleteChatroom(roomId, token) {
@@ -70,13 +80,14 @@ class ChatroomApiService {
     }
 
     static async sendMessage(roomId, message, token) {
+        const userId = localStorage.getItem('id');
         const response = await fetch(`${this.API_BASE_URL}/chatrooms/${roomId}/messages`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ text: message })
+            body: JSON.stringify({ text: message, userId })
         });
 
         if (!response.ok) throw new Error("Failed to send message");

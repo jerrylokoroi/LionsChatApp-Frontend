@@ -109,7 +109,6 @@ class UIManager {
         });
         chatRoomList.appendChild(logoutButton);
 
-        // Attach event listeners to chatrooms
         chatRoomList.querySelectorAll('li').forEach(li => {
             li.addEventListener('click', () => {
                 const roomId = li.dataset.id;
@@ -174,11 +173,13 @@ class UIManager {
     static renderMessages(messages) {
         const chatMessages = document.getElementById('chatMessages');
         if (!chatMessages) return;
-        chatMessages.innerHTML = '';
-        messages.forEach(message => {
+    
+        chatMessages.innerHTML = ''; 
+    
+        messages.forEach(msg => {
             const div = document.createElement('div');
             div.classList.add('message');
-            div.textContent = `${message.sender}: ${message.text}`;
+            div.textContent = `${msg.createdById}: ${msg.content}`;
             chatMessages.appendChild(div);
         });
     }
