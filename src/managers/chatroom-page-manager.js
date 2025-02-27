@@ -80,13 +80,13 @@ class ChatroomPageManager {
             .withAutomaticReconnect()
             .build();
 
-            this.connection.on('ReceiveMessage', (user, message) => {
-                console.log("Message received from SignalR:", user, message);
+            this.connection.on('ReceiveMessage', (messageResponse) => {
+                console.log("Message received from SignalR:", messageResponse);
                 const chatMessages = document.getElementById('chatMessages');
                 if (chatMessages) {
                     const div = document.createElement('div');
                     div.classList.add('message');
-                    div.textContent = `${user}: ${message}`;
+                    div.textContent = `${messageResponse.userName}: ${messageResponse.text}`;
                     chatMessages.appendChild(div);
                 } else {
                     console.error("chatMessages element not found when receiving message");

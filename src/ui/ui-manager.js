@@ -179,7 +179,7 @@ class UIManager {
         messages.forEach(msg => {
             const div = document.createElement('div');
             div.classList.add('message');
-            div.textContent = `${msg.createdById}: ${msg.content}`;
+            div.textContent = `${msg.userName}: ${msg.text}`;
             chatMessages.appendChild(div);
         });
     }
