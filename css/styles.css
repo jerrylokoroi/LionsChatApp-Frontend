@@ -288,6 +288,12 @@ button:disabled {
     margin-bottom: 10px;
 }
 
+.system-message {
+    color: gray;
+    font-style: italic;
+    margin: 5px 0;
+}
+
 /* Media Queries for responsiveness */
 @media (max-width: 768px) {
     .form-container {

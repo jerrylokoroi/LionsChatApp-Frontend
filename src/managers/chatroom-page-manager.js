@@ -71,6 +71,7 @@ class ChatroomPageManager {
 
     static async setupSignalRConnection(roomId, token) {
         if (this.connection) {
+            await this.connection.invoke('LeaveChatroom', roomId.toLowerCase());
             await this.connection.stop();
             this.connection = null;
         }
@@ -80,22 +81,50 @@ class ChatroomPageManager {
             .withAutomaticReconnect()
             .build();
 
-            this.connection.on('ReceiveMessage', (messageResponse) => {
-                console.log("Message received from SignalR:", messageResponse);
-                const chatMessages = document.getElementById('chatMessages');
-                if (chatMessages) {
-                    const div = document.createElement('div');
-                    div.classList.add('message');
-                    div.textContent = `${messageResponse.userName}: ${messageResponse.text}`;
-                    chatMessages.appendChild(div);
-                } else {
-                    console.error("chatMessages element not found when receiving message");
-                }
-            });
+        this.connection.on('ReceiveMessage', (messageResponse) => {
+            console.log("Message received from SignalR:", messageResponse);
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                const div = document.createElement('div');
+                div.classList.add('message');
+                div.textContent = `${messageResponse.userName}: ${messageResponse.text}`;
+                chatMessages.appendChild(div);
+            } else {
+                console.error("chatMessages element not found when receiving message");
+            }
+        });
 
         this.connection.on('LoadMessages', (messages) => {
             console.log("Loaded messages from SignalR:", messages);
             UIManager.renderMessages(messages);
+        });
+
+        this.connection.on('UserJoined', (userName) => {
+            console.log("User joined message received from SignalR:", userName);
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                const div = document.createElement('div');
+                div.classList.add('system-message');
+                div.textContent = `${userName} joined.`;
+                chatMessages.appendChild(div);
+                console.log(`Appended join message for user: ${userName}`);
+            } else {
+                console.error("chatMessages element not found when receiving user joined message");
+            }
+        });
+
+        this.connection.on('UserLeft', (userName) => {
+            console.log("User left message received from SignalR:", userName);
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                const div = document.createElement('div');
+                div.classList.add('system-message');
+                div.textContent = `${userName} left.`;
+                chatMessages.appendChild(div);
+                console.log(`Appended leave message for user: ${userName}`);
+            } else {
+                console.error("chatMessages element not found when receiving user left message");
+            }
         });
 
         this.connection.start()
