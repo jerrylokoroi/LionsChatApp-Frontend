@@ -71,7 +71,6 @@ class ChatroomPageManager {
 
     static async setupSignalRConnection(roomId, token) {
         if (this.connection) {
-            await this.connection.invoke('LeaveChatroom', roomId.toLowerCase());
             await this.connection.stop();
             this.connection = null;
         }
