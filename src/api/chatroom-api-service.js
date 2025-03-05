@@ -80,21 +80,27 @@ class ChatroomApiService {
     }
 
     static async sendMessage(roomId, message, token) {
-        const userId = localStorage.getItem('id');
-        const response = await fetch(`${this.API_BASE_URL}/chatrooms/${roomId}/messages`, {
-            method: "POST",
+        const response = await fetch(`https://localhost:7218/api/chatrooms/${roomId}/messages`, {
+            method: 'POST',
             headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ text: message, userId })
+            body: JSON.stringify({ text: message, userId: localStorage.getItem('id') })
         });
-
-        if (!response.ok) throw new Error("Failed to send message");
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('Chatroom not found');
+            } else if (response.status === 401) {
+                throw new Error('Unauthorized');
+            } else {
+                throw new Error('Failed to send message');
+            }
+        }
     }
 
     static async searchUsers(query, token) {
-        const response = await fetch(`/api/users/search?query=${encodeURIComponent(query)}`, {
+        const response = await fetch(`${this.API_BASE_URL}/users/search?query=${encodeURIComponent(query)}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -107,7 +113,7 @@ class ChatroomApiService {
     }
 
     static async assignAdmin(userName, token) {
-        const response = await fetch(`/api/users/assign-admin/${encodeURIComponent(userName)}`, {
+        const response = await fetch(`${this.API_BASE_URL}/users/assign-admin/${encodeURIComponent(userName)}`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -115,6 +121,25 @@ class ChatroomApiService {
             }
         });
         if (!response.ok) throw new Error('Failed to assign admin');
+    }
+
+    static async getChatroom(id, token) {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (response.ok) {
+            return await response.json();
+        } else if (response.status === 404) {
+            return null;
+        } else if (response.status === 401) {
+            throw new Error('Unauthorized');
+        } else {
+            throw new Error('Failed to fetch chatroom');
+        }
     }
 }
 

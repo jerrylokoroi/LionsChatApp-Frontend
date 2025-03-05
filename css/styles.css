@@ -185,11 +185,10 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--primary-color);
     margin: 5px 0;
     padding: 10px;
     border-radius: 5px;
-    cursor: pointer;
+    cursor: default !important;
 }
 
 .chat-rooms li:hover {
@@ -204,7 +203,7 @@ button:disabled {
     border: none;
     cursor: pointer;
     margin-left: 10px;
-    width: 20%;
+    width: 16%;
 }
 
 .welcome-section {
@@ -491,18 +490,18 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     padding: 8px;
-    background: var(--primary-color);
+    background: transparent !important;
     margin-bottom: 5px;
     border-radius: 4px;
 }
 
 .assign-btn {
     padding: 5px 10px;
-    background-color: var(--main-color);
+    background-color: #4F4E55;
     color: white;
     border: none;
     border-radius: 4px;
-    cursor: pointer;
+    width: 30%;
 }
 
 .assign-btn:hover {

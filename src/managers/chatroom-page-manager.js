@@ -20,12 +20,26 @@ class ChatroomPageManager {
             return;
         }
 
-        await this.loadChatroom(roomId, roomName, token);
-        this.setupSignalRConnection(roomId, token);
-        const isAdmin = localStorage.getItem('isAdmin') === 'true';
-        await SidebarManager.renderSidebar(token, isAdmin, (id, name) => {
-            window.location.href = `chatroom.html?roomId=${id}&roomName=${encodeURIComponent(name)}`;
-        });
+        try {
+            const chatroom = await ChatroomApiService.getChatroom(roomId, token);
+            if (!chatroom) {
+                UIManager.showError('Chatroom not found');
+                window.location.href = 'welcome-room.html';
+                return;
+            }
+            await this.loadChatroom(roomId, chatroom.name, token);
+            this.setupSignalRConnection(roomId, token);
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            await SidebarManager.renderSidebar(token, isAdmin, (id, name) => {
+                window.location.href = `chatroom.html?roomId=${id}&roomName=${encodeURIComponent(name)}`;
+            });
+        } catch (error) {
+            if (error.message === 'Unauthorized') {
+                window.location.href = 'login.html';
+            } else {
+                UIManager.showError(error.message);
+            }
+        }
     }
 
     static async loadChatroom(roomId, roomName, token) {
@@ -60,15 +74,21 @@ class ChatroomPageManager {
             UIManager.showError('Cannot send message: Not connected to chat');
             return;
         }
-
+    
         const message = messageInput.value.trim();
-
         if (message) {
             try {
                 await ChatroomApiService.sendMessage(roomId, message, token);
                 messageInput.value = '';
             } catch (error) {
-                UIManager.showError(error.message);
+                if (error.message === 'Chatroom not found') {
+                    alert('This chatroom no longer exists. Redirecting to the welcome room.');
+                    window.location.href = 'welcome-room.html';
+                } else if (error.message === 'Unauthorized') {
+                    window.location.href = 'login.html';
+                } else {
+                    UIManager.showError(error.message);
+                }
             }
         }
     }
@@ -174,6 +194,18 @@ class ChatroomPageManager {
             } else {
                 console.error("chatMessages element not found when receiving user left message");
             }
+        });
+
+        this.connection.on('GroupDeleted', (deletedRoomId) => {
+            if (deletedRoomId === roomId) {
+                alert('This chatroom has been deleted. Redirecting to the welcome room.');
+                window.location.href = 'welcome-room.html';
+            }
+        });
+
+        this.connection.on('ChatroomNotFound', () => {
+            alert('This chatroom no longer exists. Redirecting to the welcome room.');
+            window.location.href = 'welcome-room.html';
         });
 
         this.connection.start()

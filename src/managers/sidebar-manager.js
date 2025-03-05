@@ -65,37 +65,37 @@ class SidebarManager {
                 }
             }
 
-            // if (isAdmin) {
-            //     const searchContainer = document.createElement('div');
-            //     searchContainer.classList.add('search-container');
+            if (isAdmin) {
+                const searchContainer = document.createElement('div');
+                searchContainer.classList.add('search-container');
 
-            //     const searchInput = document.createElement('input');
-            //     searchInput.type = 'text';
-            //     searchInput.placeholder = 'Search users...';
-            //     searchInput.classList.add('search-input');
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Search users...';
+                searchInput.classList.add('search-input');
 
-            //     const searchResults = document.createElement('ul');
-            //     searchResults.classList.add('search-results');
+                const searchResults = document.createElement('ul');
+                searchResults.classList.add('search-results');
 
-            //     searchContainer.appendChild(searchInput);
-            //     searchContainer.appendChild(searchResults);
-            //     chatRoomList.appendChild(searchContainer);
+                searchContainer.appendChild(searchInput);
+                searchContainer.appendChild(searchResults);
+                chatRoomList.appendChild(searchContainer);
 
-            //     // Debounce search input for efficiency
-            //     let searchTimeout;
-            //     searchInput.addEventListener('input', () => {
-            //         clearTimeout(searchTimeout);
-            //         searchTimeout = setTimeout(async () => {
-            //             const query = searchInput.value.trim();
-            //             if (query) {
-            //                 const users = await ChatroomApiService.searchUsers(query, token);
-            //                 SidebarManager.renderSearchResults(users, searchResults, token);
-            //             } else {
-            //                 searchResults.innerHTML = '';
-            //             }
-            //         }, 300); // 300ms delay
-            //     });
-            // }
+                // Debounce search input for efficiency
+                let searchTimeout;
+                searchInput.addEventListener('input', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(async () => {
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            const users = await ChatroomApiService.searchUsers(query, token);
+                            SidebarManager.renderSearchResults(users, searchResults, token);
+                        } else {
+                            searchResults.innerHTML = '';
+                        }
+                    }, 300); // 300ms delay
+                });
+            }
 
             if (isAdmin) {
                 const addButton = document.createElement('button');
