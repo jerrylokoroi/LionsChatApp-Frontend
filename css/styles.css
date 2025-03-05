@@ -199,7 +199,7 @@ button:disabled {
 .delete-btn {
     font-size: 12px;
     padding: 2px 5px;
-    background-color: red;
+    background-color: #4F4E55;
     color: white;
     border: none;
     cursor: pointer;
@@ -229,13 +229,13 @@ button:disabled {
 }
 
 .add-btn {
-    background-color: green;
+    background-color: var(--main-color);
     bottom: 10%;
     left: 0px;
 }
 
 .logout-btn {
-    background-color: red;
+    background-color: #4F4E55;
     bottom: 25px;
     left: 0px;
 }
@@ -381,4 +381,197 @@ button:disabled {
         margin: 0;
         order: 1;
     }
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between messages */
+    padding: 10px;
+    background-color: #f0f0f0; /* Dull background for contrast */
+    flex-grow: 1; /* Ensures it takes available space */
+    overflow-y: auto;
+    width: 95%;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 60%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.message.sent {
+    align-self: flex-end;
+    background-color: #dcf8c6;
+}
+
+.message.received {
+    align-self: flex-start;
+    background-color: #e0e0e0;
+}
+
+.message .username {
+    font-size: 0.8em;
+    color: #555;
+    margin-bottom: 2px;
+    align-self: flex-start; /* Top-left */
+}
+
+.message .text {
+    word-wrap: break-word;
+    align-self: flex-start;
+    color: black;
+}
+
+.message .time {
+    font-size: 0.7em;
+    color: #777;
+    align-self: flex-end; /* Bottom-right */
+    margin-top: 5px;
+}
+
+.chatroom-container {
+    display: flex;
+    width: 100vw; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    background-color: #f0f0f0; /* Dull background */
+}
+
+.chat-rooms {
+    width: 30%; /* Fixed sidebar width */
+    background: var(--minor-bg);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+}
+
+.chat-section {
+    flex-grow: 1; /* Takes remaining space */
+    display: flex;
+    flex-direction: column;
+    background-color: #f0f0f0; /* Matches dull background */
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+
+.search-container {
+    margin: 20px 10px 0;
+    padding: 10px;
+    background: var(--minor-bg);
+    border-radius: 5px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.search-results {
+    list-style: none;
+    padding: 0;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.search-results li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: var(--primary-color);
+    margin-bottom: 5px;
+    border-radius: 4px;
+}
+
+.assign-btn {
+    padding: 5px 10px;
+    background-color: var(--main-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.assign-btn:hover {
+    background-color: #5a8f68;
+}
+
+.chatroom-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+    border-radius: 50%; /* Circular icons */
+    object-fit: cover; /* Ensure images fit nicely */
+}
+
+.chat-rooms li {
+    display: flex;
+    align-items: center; /* Vertically center icon and text */
+    background: var(--primary-color);
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.message.system {
+    color: #6DAA7D;
+    font-style: italic;
+    text-align: center;
+    max-width: 100%;
+    margin: 10px 0;
+    background: none;
+}
+
+.welcome-section h1,
+.chat-section h2 {
+    color: #000000; /* Black */
+}
+
+.chat-rooms li.active {
+    background-color: #6DAA7D; /* Green */
+}
+
+.chat-input button {
+    padding: 10px;
+    background-color: #6DAA7D;
+    color: white;
+    border: 1px solid #6DAA7D;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    width: 90px; /* Fixed width for icon */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-input button:hover {
+    background-color: #5a8f68;
+}
+
+.welcome-section h2{
+    color: #000;
+}
+
+.date-header {
+    text-align: center;
+    color: #666;
+    margin: 10px 0;
+    font-size: 0.9em;
+    max-width: 100%;
+    padding: 5px;
+    background-color: #f0f0f0;
 }

@@ -17,12 +17,18 @@ class SidebarManager {
                 chatrooms.forEach(chatroom => {
                     const li = document.createElement('li');
                     li.dataset.id = chatroom.id;
-                    li.innerHTML = `<span>${chatroom.name}</span>`;
 
-                    li.addEventListener('click', () => {
-                        onChatroomSelect(chatroom.id, chatroom.name);
-                        history.pushState(null, '', `?roomId=${chatroom.id}&roomName=${encodeURIComponent(chatroom.name)}`);
-                    });
+                    // Add chatroom icon
+                    const img = document.createElement('img');
+                    img.src = chatroom.iconUrl || '/images/default-icon.png'; // Fallback image
+                    img.alt = `${chatroom.name} icon`;
+                    img.classList.add('chatroom-icon');
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = chatroom.name;
+
+                    li.appendChild(img);
+                    li.appendChild(nameSpan);
 
                     if (isAdmin) {
                         const deleteButton = document.createElement('button');
@@ -39,14 +45,61 @@ class SidebarManager {
                         li.appendChild(deleteButton);
                     }
 
+                    li.addEventListener('click', () => {
+                        chatRoomList.querySelectorAll('li').forEach(item => item.classList.remove('active'));
+                        li.classList.add('active');
+                        localStorage.setItem('selectedChatroomId', chatroom.id);
+                        onChatroomSelect(chatroom.id, chatroom.name);
+                        history.pushState(null, '', `?roomId=${chatroom.id}&roomName=${encodeURIComponent(chatroom.name)}`);
+                    });
+
                     chatRoomList.appendChild(li);
                 });
+
+                const selectedId = localStorage.getItem('selectedChatroomId');
+                if (selectedId) {
+                    const selectedLi = chatRoomList.querySelector(`li[data-id="${selectedId}"]`);
+                    if (selectedLi) {
+                        selectedLi.classList.add('active');
+                    }
+                }
             }
 
-            // Add the Add Chatroom button if the user is an admin
+            // if (isAdmin) {
+            //     const searchContainer = document.createElement('div');
+            //     searchContainer.classList.add('search-container');
+
+            //     const searchInput = document.createElement('input');
+            //     searchInput.type = 'text';
+            //     searchInput.placeholder = 'Search users...';
+            //     searchInput.classList.add('search-input');
+
+            //     const searchResults = document.createElement('ul');
+            //     searchResults.classList.add('search-results');
+
+            //     searchContainer.appendChild(searchInput);
+            //     searchContainer.appendChild(searchResults);
+            //     chatRoomList.appendChild(searchContainer);
+
+            //     // Debounce search input for efficiency
+            //     let searchTimeout;
+            //     searchInput.addEventListener('input', () => {
+            //         clearTimeout(searchTimeout);
+            //         searchTimeout = setTimeout(async () => {
+            //             const query = searchInput.value.trim();
+            //             if (query) {
+            //                 const users = await ChatroomApiService.searchUsers(query, token);
+            //                 SidebarManager.renderSearchResults(users, searchResults, token);
+            //             } else {
+            //                 searchResults.innerHTML = '';
+            //             }
+            //         }, 300); // 300ms delay
+            //     });
+            // }
+
             if (isAdmin) {
                 const addButton = document.createElement('button');
-                addButton.textContent = 'Add Chatroom';
+                addButton.innerHTML = '<i class="fas fa-plus"> Add ChatRoom</i>';
                 addButton.classList.add('add-btn');
                 addButton.addEventListener('click', async () => {
                     const name = prompt('Enter new chatroom name:');
@@ -58,9 +111,8 @@ class SidebarManager {
                 chatRoomList.appendChild(addButton);
             }
 
-            // Add the Logout button
             const logoutButton = document.createElement('button');
-            logoutButton.textContent = 'Logout';
+            logoutButton.innerHTML = '<i class="fas fa-sign-out-alt"> Sign Out</i>';
             logoutButton.classList.add('logout-btn');
             logoutButton.addEventListener('click', () => {
                 localStorage.clear();
@@ -71,6 +123,29 @@ class SidebarManager {
         } catch (error) {
             UIManager.showError(error.message);
         }
+    }
+
+    static renderSearchResults(users, searchResults, token) {
+        searchResults.innerHTML = '';
+        users.forEach(user => {
+            const li = document.createElement('li');
+            li.textContent = user.userName;
+
+            const assignButton = document.createElement('button');
+            assignButton.textContent = 'Make Admin';
+            assignButton.classList.add('assign-btn');
+            assignButton.addEventListener('click', async () => {
+                try {
+                    await ChatroomApiService.assignAdmin(user.userName, token);
+                    alert(`${user.userName} is now an admin.`);
+                } catch (error) {
+                    UIManager.showError(error.message);
+                }
+            });
+
+            li.appendChild(assignButton);
+            searchResults.appendChild(li);
+        });
     }
 }
 

@@ -138,10 +138,10 @@ class UIManager {
         const chatSection = document.getElementById("chatSection");
         chatSection.innerHTML = `
             <h2>${roomName}</h2>
-            <div class="chat-messages" id="chatMessages"></div>
+            <div id="chatMessages" class="chat-messages"></div>
             <div class="chat-input">
-                <input type="text" id="messageInput" placeholder="Type a message...">
-                <button id="sendMessageButton">Send</button>
+                <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" autocorrect="off" spellcheck="false">
+                <button id="sendMessageButton"><i class="fas fa-paper-plane"></i></button>
             </div>
         `;
 
@@ -174,13 +174,45 @@ class UIManager {
         const chatMessages = document.getElementById('chatMessages');
         if (!chatMessages) return;
     
-        chatMessages.innerHTML = ''; 
+        const currentUserId = localStorage.getItem('id');
+        let lastDate = null;
+        chatMessages.innerHTML = '';
     
         messages.forEach(msg => {
-            const div = document.createElement('div');
-            div.classList.add('message');
-            div.textContent = `${msg.userName}: ${msg.text}`;
-            chatMessages.appendChild(div);
+            const messageDate = new Date(msg.createdAt).toLocaleDateString();
+    
+            if (messageDate !== lastDate) {
+                const dateHeader = document.createElement('div');
+                dateHeader.classList.add('date-header');
+                dateHeader.textContent = messageDate;
+                chatMessages.appendChild(dateHeader);
+                lastDate = messageDate;
+            }
+    
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            const isSent = msg.userId === currentUserId;
+            if (isSent) {
+                messageDiv.classList.add('sent');
+            } else {
+                messageDiv.classList.add('received');
+                const usernameSpan = document.createElement('span');
+                usernameSpan.classList.add('username');
+                usernameSpan.textContent = msg.userName;
+                messageDiv.appendChild(usernameSpan);
+            }
+    
+            const textSpan = document.createElement('span');
+            textSpan.classList.add('text');
+            textSpan.textContent = msg.text;
+            messageDiv.appendChild(textSpan);
+    
+            const timeSpan = document.createElement('span');
+            timeSpan.classList.add('time');
+            timeSpan.textContent = new Date(msg.createdAt).toLocaleTimeString();
+            messageDiv.appendChild(timeSpan);
+    
+            chatMessages.appendChild(messageDiv);
         });
     }
 

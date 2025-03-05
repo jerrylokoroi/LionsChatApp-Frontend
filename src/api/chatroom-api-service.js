@@ -92,6 +92,30 @@ class ChatroomApiService {
 
         if (!response.ok) throw new Error("Failed to send message");
     }
+
+    static async searchUsers(query, token) {
+        const response = await fetch(`/api/users/search?query=${encodeURIComponent(query)}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) throw new Error('Failed to search users');
+        const data = await response.json();
+        return data.data; 
+    }
+
+    static async assignAdmin(userName, token) {
+        const response = await fetch(`/api/users/assign-admin/${encodeURIComponent(userName)}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) throw new Error('Failed to assign admin');
+    }
 }
 
 export default ChatroomApiService;

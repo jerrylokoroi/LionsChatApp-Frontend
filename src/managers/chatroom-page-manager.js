@@ -22,6 +22,10 @@ class ChatroomPageManager {
 
         await this.loadChatroom(roomId, roomName, token);
         this.setupSignalRConnection(roomId, token);
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        await SidebarManager.renderSidebar(token, isAdmin, (id, name) => {
+            window.location.href = `chatroom.html?roomId=${id}&roomName=${encodeURIComponent(name)}`;
+        });
     }
 
     static async loadChatroom(roomId, roomName, token) {
@@ -36,8 +40,8 @@ class ChatroomPageManager {
             <h2>${roomName}</h2>
             <div id="chatMessages" class="chat-messages"></div>
             <div class="chat-input">
-                <input type="text" id="messageInput" placeholder="Type a message...">
-                <button id="sendMessageButton">Send</button>
+                <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off" autocorrect="off" spellcheck="false">
+                <button id="sendMessageButton"><i class="fas fa-paper-plane"></i></button>
             </div>
         `;
 
@@ -48,7 +52,7 @@ class ChatroomPageManager {
             if (e.key === 'Enter') sendMessageButton.click();
         });
 
-        this.setupSignalRConnection(roomId, token);
+        await this.setupSignalRConnection(roomId, token);
     }
 
     static async handleSendMessage(roomId, messageInput, token) {
@@ -56,9 +60,9 @@ class ChatroomPageManager {
             UIManager.showError('Cannot send message: Not connected to chat');
             return;
         }
-    
+
         const message = messageInput.value.trim();
-        
+
         if (message) {
             try {
                 await ChatroomApiService.sendMessage(roomId, message, token);
@@ -81,46 +85,92 @@ class ChatroomPageManager {
             .build();
 
         this.connection.on('ReceiveMessage', (messageResponse) => {
-            console.log("Message received from SignalR:", messageResponse);
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
-                const div = document.createElement('div');
-                div.classList.add('message');
-                div.textContent = `${messageResponse.userName}: ${messageResponse.text}`;
-                chatMessages.appendChild(div);
-            } else {
-                console.error("chatMessages element not found when receiving message");
+                let lastDate = null;
+                const lastChild = chatMessages.lastElementChild;
+                if (lastChild && lastChild.classList.contains('date-header')) {
+                    lastDate = lastChild.textContent;
+                } else if (lastChild && lastChild.classList.contains('message')) {
+                    const timeSpan = lastChild.querySelector('.time');
+                    if (timeSpan) {
+                        lastDate = new Date(timeSpan.dataset.timestamp).toLocaleDateString();
+                    }
+                }
+
+                const currentDate = new Date(messageResponse.createdAt).toLocaleDateString();
+
+                const existingDateHeader = Array.from(chatMessages.getElementsByClassName('date-header'))
+                    .find(header => header.textContent === currentDate);
+
+                if (!existingDateHeader && currentDate !== lastDate) {
+                    const dateHeader = document.createElement('div');
+                    dateHeader.classList.add('date-header');
+                    dateHeader.textContent = currentDate;
+                    chatMessages.appendChild(dateHeader);
+                }
+
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                const isSent = messageResponse.userName === localStorage.getItem('username');
+                if (isSent) {
+                    messageDiv.classList.add('sent');
+                } else {
+                    messageDiv.classList.add('received');
+                    const usernameSpan = document.createElement('span');
+                    usernameSpan.classList.add('username');
+                    usernameSpan.textContent = messageResponse.userName;
+                    messageDiv.appendChild(usernameSpan);
+                }
+
+                const textSpan = document.createElement('span');
+                textSpan.classList.add('text');
+                textSpan.textContent = messageResponse.text;
+                messageDiv.appendChild(textSpan);
+
+                const timeSpan = document.createElement('span');
+                timeSpan.classList.add('time');
+                timeSpan.textContent = new Date(messageResponse.createdAt).toLocaleTimeString();
+                timeSpan.dataset.timestamp = messageResponse.createdAt;
+                messageDiv.appendChild(timeSpan);
+
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         });
 
         this.connection.on('LoadMessages', (messages) => {
             console.log("Loaded messages from SignalR:", messages);
             UIManager.renderMessages(messages);
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         });
 
         this.connection.on('UserJoined', (userName) => {
-            console.log("User joined message received from SignalR:", userName);
+            console.log(`UserJoined event received: ${userName}`);
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
                 const div = document.createElement('div');
-                div.classList.add('system-message');
-                div.textContent = `${userName} joined.`;
+                div.classList.add('message', 'system');
+                div.textContent = `${userName} has joined the chatroom.`;
                 chatMessages.appendChild(div);
-                console.log(`Appended join message for user: ${userName}`);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             } else {
-                console.error("chatMessages element not found when receiving user joined message");
+                console.error('chatMessages element not found');
             }
         });
 
         this.connection.on('UserLeft', (userName) => {
-            console.log("User left message received from SignalR:", userName);
+            console.log("UserJoined left received:", userName);
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
                 const div = document.createElement('div');
-                div.classList.add('system-message');
-                div.textContent = `${userName} left.`;
+                div.classList.add('message', 'system');
+                div.textContent = `${userName} has left the chatroom.`;
                 chatMessages.appendChild(div);
-                console.log(`Appended leave message for user: ${userName}`);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             } else {
                 console.error("chatMessages element not found when receiving user left message");
             }
@@ -132,7 +182,13 @@ class ChatroomPageManager {
                 console.log(`Attempting to join chatroom ${roomId}`);
                 return this.connection.invoke('JoinChatroom', roomId.toLowerCase());
             })
-            .then(() => console.log(`Joined chatroom ${roomId}`))
+            .then(() => {
+                console.log(`Joined chatroom ${roomId}`);
+                const chatMessages = document.getElementById('chatMessages');
+                if (chatMessages) {
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }
+            })
             .catch(err => console.error('SignalR connection error:', err));
     }
 }
