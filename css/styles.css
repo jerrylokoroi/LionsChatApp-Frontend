@@ -31,7 +31,6 @@ body {
 .logo {
     text-align: center;
     margin-bottom: 1.5rem;
-    width: 240px;
     height: auto;
 }
 
@@ -385,10 +384,10 @@ button:disabled {
 .chat-messages {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Space between messages */
+    gap: 10px;
     padding: 10px;
-    background-color: #f0f0f0; /* Dull background for contrast */
-    flex-grow: 1; /* Ensures it takes available space */
+    background-color: #f0f0f0;
+    flex-grow: 1;
     overflow-y: auto;
     width: 95%;
 }
@@ -416,7 +415,7 @@ button:disabled {
     font-size: 0.8em;
     color: #555;
     margin-bottom: 2px;
-    align-self: flex-start; /* Top-left */
+    align-self: flex-start;
 }
 
 .message .text {
@@ -428,19 +427,19 @@ button:disabled {
 .message .time {
     font-size: 0.7em;
     color: #777;
-    align-self: flex-end; /* Bottom-right */
+    align-self: flex-end;
     margin-top: 5px;
 }
 
 .chatroom-container {
     display: flex;
-    width: 100vw; /* Full viewport width */
-    height: 100vh; /* Full viewport height */
-    background-color: #f0f0f0; /* Dull background */
+    width: 100vw;
+    height: 100vh;
+    background-color: #f0f0f0;
 }
 
 .chat-rooms {
-    width: 30%; /* Fixed sidebar width */
+    width: 30%;
     background: var(--minor-bg);
     display: flex;
     flex-direction: column;
@@ -449,10 +448,10 @@ button:disabled {
 }
 
 .chat-section {
-    flex-grow: 1; /* Takes remaining space */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    background-color: #f0f0f0; /* Matches dull background */
+    background-color: #f0f0f0;
 }
 
 .chat-input {
@@ -512,13 +511,13 @@ button:disabled {
     width: 32px;
     height: 32px;
     margin-right: 10px;
-    border-radius: 50%; /* Circular icons */
-    object-fit: cover; /* Ensure images fit nicely */
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .chat-rooms li {
     display: flex;
-    align-items: center; /* Vertically center icon and text */
+    align-items: center;
     background: var(--primary-color);
     margin: 5px 0;
     padding: 10px;
@@ -537,11 +536,11 @@ button:disabled {
 
 .welcome-section h1,
 .chat-section h2 {
-    color: #000000; /* Black */
+    color: #000000;
 }
 
 .chat-rooms li.active {
-    background-color: #6DAA7D; /* Green */
+    background-color: #6DAA7D;
 }
 
 .chat-input button {
@@ -551,7 +550,7 @@ button:disabled {
     border: 1px solid #6DAA7D;
     border-radius: 0 4px 4px 0;
     cursor: pointer;
-    width: 90px; /* Fixed width for icon */
+    width: 90px;
     display: flex;
     justify-content: center;
     align-items: center;

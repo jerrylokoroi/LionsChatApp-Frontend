@@ -18,9 +18,8 @@ class SidebarManager {
                     const li = document.createElement('li');
                     li.dataset.id = chatroom.id;
 
-                    // Add chatroom icon
                     const img = document.createElement('img');
-                    img.src = chatroom.iconUrl || '/images/default-icon.png'; // Fallback image
+                    img.src = chatroom.iconUrl || '/images/default-icon.png';
                     img.alt = `${chatroom.name} icon`;
                     img.classList.add('chatroom-icon');
 
@@ -81,7 +80,6 @@ class SidebarManager {
                 searchContainer.appendChild(searchResults);
                 chatRoomList.appendChild(searchContainer);
 
-                // Debounce search input for efficiency
                 let searchTimeout;
                 searchInput.addEventListener('input', () => {
                     clearTimeout(searchTimeout);
@@ -93,7 +91,7 @@ class SidebarManager {
                         } else {
                             searchResults.innerHTML = '';
                         }
-                    }, 300); // 300ms delay
+                    }, 300);
                 });
             }
 
