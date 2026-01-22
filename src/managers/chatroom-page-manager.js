@@ -1,6 +1,7 @@
 import ChatroomApiService from '../api/chatroom-api-service.js';
 import UIManager from '../ui/ui-manager.js';
 import API_CONFIG from '../config.js';
+import SidebarManager from './sidebar-manager.js';
 
 class ChatroomPageManager {
     static connection = null;

@@ -19,7 +19,7 @@ class SidebarManager {
                     li.dataset.id = chatroom.id;
 
                     const img = document.createElement('img');
-                    img.src = chatroom.iconUrl || '/images/default-icon.png';
+                    img.src = chatroom.iconUrl || 'images/default-icon.png';
                     img.alt = `${chatroom.name} icon`;
                     img.classList.add('chatroom-icon');
 
