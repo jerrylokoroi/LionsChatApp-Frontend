@@ -1,0 +1,14 @@
+<!-- Environment Configuration Script -->
+<script>
+  // This will be populated by Vercel's environment variables
+  window.ENV_API_URL = '__ENV_API_URL__';
+  window.ENV_WS_URL = '__ENV_WS_URL__';
+  
+  // Fallback to localhost if not set (for development)
+  if (window.ENV_API_URL === '__ENV_API_URL__' || !window.ENV_API_URL) {
+    window.ENV_API_URL = 'https://localhost:7218';
+  }
+  if (window.ENV_WS_URL === '__ENV_WS_URL__' || !window.ENV_WS_URL) {
+    window.ENV_WS_URL = 'https://localhost:7218';
+  }
+</script>

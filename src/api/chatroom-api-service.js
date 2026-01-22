@@ -1,5 +1,7 @@
+import API_CONFIG from '../config.js';
+
 class ChatroomApiService {
-    static API_BASE_URL = "https://localhost:7218/api";
+    static API_BASE_URL = `${API_CONFIG.BASE_URL}/api`;
 
     static async fetchChatrooms(token) {
         const response = await fetch(`${this.API_BASE_URL}/chatrooms`, {
@@ -80,7 +82,7 @@ class ChatroomApiService {
     }
 
     static async sendMessage(roomId, message, token) {
-        const response = await fetch(`https://localhost:7218/api/chatrooms/${roomId}/messages`, {
+        const response = await fetch(`${this.API_BASE_URL}/chatrooms/${roomId}/messages`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

@@ -1,5 +1,7 @@
+import API_CONFIG from '../config.js';
+
 class AuthenticationApiService {
-    static API_BASE_URL = "https://localhost:7218/api";
+    static API_BASE_URL = `${API_CONFIG.BASE_URL}/api`;
 
     static async registerUser(username, password) {
         const response = await fetch(`${this.API_BASE_URL}/users/register`, {

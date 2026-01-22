@@ -1,5 +1,6 @@
 import ChatroomApiService from '../api/chatroom-api-service.js';
 import UIManager from '../ui/ui-manager.js';
+import API_CONFIG from '../config.js';
 
 class ChatroomPageManager {
     static connection = null;
@@ -100,7 +101,7 @@ class ChatroomPageManager {
         }
 
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(`https://localhost:7218/chatHub`, { accessTokenFactory: () => token })
+            .withUrl(`${API_CONFIG.WS_URL}/chatHub`, { accessTokenFactory: () => token })
             .withAutomaticReconnect()
             .build();
 
